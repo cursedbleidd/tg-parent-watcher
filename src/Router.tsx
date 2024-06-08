@@ -9,8 +9,8 @@ const router = createBrowserRouter([
   },
   {
     path: '/target',
-    element: <Target/ >
-  }
+    element: <Target />,
+  },
 ]);
 
 export function Router() {

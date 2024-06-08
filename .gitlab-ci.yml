@@ -1,0 +1,15 @@
+stages:
+  - lint
+
+.deps:
+  image: node:20-alpine
+  before_script: &npm_install
+    - yarn
+
+job_lint:
+  stage: lint
+  extends:
+    - .deps
+  script:
+    - yarn lint
+
