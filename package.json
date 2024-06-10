@@ -19,10 +19,11 @@
     "storybook:build": "storybook build"
   },
   "dependencies": {
-    "@mantine/core": "7.10.0",
-    "@mantine/hooks": "7.10.0",
     "@vitejs/plugin-basic-ssl": "^1.1.0",
     "@vkruglikov/react-telegram-web-app": "2.1.9",
+    "antd": "^5.18.0",
+    "dayjs": "^1.11.11",
+    "moment": "^2.30.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",

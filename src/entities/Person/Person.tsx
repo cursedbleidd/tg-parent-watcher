@@ -1,4 +1,4 @@
-import { Image, Text } from '@mantine/core';
+import { Image, Typography } from 'antd';
 import styles from './person.module.scss';
 
 export interface Person {
@@ -12,10 +12,10 @@ export interface Person {
 
 export const PersonView: React.FC<{ person: Person }> = ({ person }) => (
   <div className={styles.card}>
-    <Text>{person.name}</Text>
+    <Typography.Text>{person.name}</Typography.Text>
     <Image src={person.img} />
-    <Text>Age: {person.age}</Text>
-    <Text>Gender: {person.gender}</Text>
-    <Text>Email: {person.email}</Text>
+    <Typography.Text>Age: {person.age}</Typography.Text>
+    <Typography.Text>Gender: {person.gender}</Typography.Text>
+    <Typography.Text>Email: {person.email}</Typography.Text>
   </div>
 );
