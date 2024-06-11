@@ -2,14 +2,10 @@ import React from 'react';
 import { Form, Input, InputNumber, DatePicker, Button } from 'antd';
 import moment from 'moment';
 
-const nothing = (values: any) => values;
-
 export const BankCardForm : React.FC = () => {
   const [form] = Form.useForm();
 
-  const onFinish = (values: any) => {
-    nothing(values);
-  };
+  const onFinish = (values: any) => values;
 
   return (
     <Form
@@ -56,8 +52,8 @@ export const BankCardForm : React.FC = () => {
                 message: 'Please input your CVV!',
               },
               {
-                pattern: /^[0-9]{3,4}$/,
-                message: 'CVV must be 3 or 4 digits!',
+                pattern: /^[0-9]{3}$/,
+                message: 'CVV must be 3 digits!',
               },
             ]}
           >
@@ -72,14 +68,14 @@ export const BankCardForm : React.FC = () => {
             rules={[
               {
                 required: true,
-                message: 'Please select the expiry date!',
+                message: 'Пожалуйста, выберите даты истечения карты!',
               },
               {
                 validator(_, value) {
                   if (value && value.isAfter(moment())) {
                     return Promise.resolve();
                   }
-                  return Promise.reject(new Error('Expiry date must be in the future!'));
+                  return Promise.reject(new Error('Дата истечения должна быть в будущем!'));
                 },
               },
             ]}

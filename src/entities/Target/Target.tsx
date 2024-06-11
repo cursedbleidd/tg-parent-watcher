@@ -1,14 +1,15 @@
 import { EditOutlined, PoweroffOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useShowPopup } from '@vkruglikov/react-telegram-web-app';
-import { Card, Skeleton, Space, Typography, Form, Input, Checkbox, Button, TimePicker } from 'antd';
+import { Card, Skeleton, Space, Typography, Form, Input, Button, TimePicker, Select } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
+import { useEffect, useState } from 'react';
 //import styles from './target.module.scss';
 
 export interface Target {
   name: string;
   lastonline: string;
-  timetable: string[];
+  daytable: string[];
   timelimit: string;
   id: string;
 }
@@ -62,7 +63,7 @@ export const TargetCard: React.FC<{ target: Target }> = ({ target }) => {
                         <Typography.Text>Ограничение времени:</Typography.Text>
                         {target.timelimit}
                         <Typography.Text>Дни недели:</Typography.Text>
-                        {target.timetable}
+                        {target.daytable}
                         </div>
                     }
                   />
@@ -82,7 +83,7 @@ export const TargetCards: React.FC<{ targets: Target[] }> = ({ targets }) => (
 </>
 );
 
-const optionsCheckbox = () => [
+const optionsCheckbox = [
     { label: 'Понедельник', value: 'Пн' },
     { label: 'Вторник', value: 'Вт' },
     { label: 'Среда', value: 'Ср' },
@@ -92,10 +93,31 @@ const optionsCheckbox = () => [
     { label: 'Воскресенье', value: 'Вс' },
 ];
 
-export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => (
+export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
+  const [form] = Form.useForm();
+  const [isTimeValid, setIsTimeValid] = useState(false);
+  //const [selectedDays, setSelectedDays] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (target?.timelimit) {
+      const time = dayjs(target.timelimit, 'HH:mm');
+      setIsTimeValid(time && (time.hour() !== 0 || time.minute() !== 0));
+    }
+  }, [target]);
+
+  const timeChange = (time: Dayjs) => {
+    setIsTimeValid(time && (time.hour() !== 0 || time.minute() !== 0));
+  };
+
+  const onFinish = (values: any) => values;
+
+  return (
  !target ?
-    <Form>
+    <Form
+      form={form}
+      onFinish={onFinish}>
         <Form.Item
+          name="id"
           label="Идентификатор"
           rules={[{ required: true, message: 'Пожалуйста, введите идентификатор!' }]}
         >
@@ -106,25 +128,45 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => (
         </Form.Item>
     </Form>
     :
-    <Form>
+    <Form
+      form={form}
+      initialValues={
+        {
+          name: target.name,
+          timelimit: dayjs(target.timelimit, 'HH:mm'),
+          daytable: target.daytable,
+        }
+      }
+      onFinish={onFinish}>
         <Form.Item
-          label="Имя"
-          rules={[{ required: true, message: 'Пожалуйста, введите имя!' }]}
+          name="name"
+          label="Имя" // rules how to make rules??
+          rules={[
+            {
+              required: true,
+              message: 'Пожалуйста, введите имя!',
+            },
+          ]
+          }
         >
-            <Input defaultValue={target.name} />
+            <Input />
         </Form.Item>
-        <Form.Item label="Ограничение времени">
-            <TimePicker format="HH:mm" defaultValue={dayjs(target.timelimit, 'HH:mm')} />
+        <Form.Item
+          label="Ограничение времени"
+          name="timelimit">
+            <TimePicker placeholder="Час:Мин" format="HH:mm" showNow={false} needConfirm={false} changeOnScroll onChange={timeChange} />
         </Form.Item>
-        <Form.Item label="Дни недели">
-            <Checkbox.Group
-              options={optionsCheckbox()}
-              defaultValue={target.timetable}
-            >
-            </Checkbox.Group>
+        <Form.Item
+          label="Дни недели"
+          name="daytable">
+            <Select
+              mode="multiple"
+              options={optionsCheckbox}
+              disabled={!isTimeValid} />
         </Form.Item>
         <Form.Item>
             <Button type="primary" htmlType="submit">Сохранить</Button>
         </Form.Item>
     </Form>
 );
+};

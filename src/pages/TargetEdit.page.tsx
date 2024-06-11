@@ -1,6 +1,5 @@
 import { BackButton } from '@vkruglikov/react-telegram-web-app';
 import { useNavigate, useLocation } from 'react-router-dom';
-//import { Typography } from 'antd';
 import { TargetForm } from '@/entities/Target/Target';
 
 export const TargetEdit : React.FC = () => {
