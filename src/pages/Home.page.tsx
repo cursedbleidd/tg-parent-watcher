@@ -15,7 +15,7 @@ export function HomePage() {
       <Typography.Title>Welcome! <LoadingOutlined /></Typography.Title>
       <Typography.Text>{localStorage.getItem('token')}</Typography.Text>
       <Typography.Title>Debug</Typography.Title>
-      <Typography.Text>{decodeURIComponent(webApp.initData)}</Typography.Text>
+      <Typography.Text>{webApp.initData}</Typography.Text>
       <Button onClick={() => navigate('/subscription')}>
         subscription
       </Button>

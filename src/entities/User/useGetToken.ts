@@ -8,7 +8,7 @@ export const useGetToken = () => {
     useEffect(() => {
         const fetchToken = async () => {
             try {
-                const response = await axios.post('https://localhost:7036/Users', decodeURI(webApp.initData), {
+                const response = await axios.post('https://localhost:7036/Users', webApp.initData, {
                     headers: {
                         'Content-Type': 'application/json',
                     },
