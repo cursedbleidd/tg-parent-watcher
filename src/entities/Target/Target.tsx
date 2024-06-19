@@ -1,16 +1,16 @@
 import { EditOutlined, PoweroffOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useShowPopup } from '@vkruglikov/react-telegram-web-app';
-import { Card, Skeleton, Space, Typography, Form, Input, Button, TimePicker, Select } from 'antd';
+import { Card, Skeleton, Space, Typography, Form, Input, Button, Select, InputNumber } from 'antd';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import dayjs, { Dayjs } from 'dayjs';
-import { useEffect, useState } from 'react';
 //import styles from './target.module.scss';
 
 export interface Target {
   name: string;
   lastonline: string;
   daytable: string[];
-  timelimit: string;
+  hourlimit: number;
+  minutelimit: number;
   id: string;
 }
 
@@ -61,7 +61,7 @@ export const TargetCard: React.FC<{ target: Target }> = ({ target }) => {
                         <Typography.Text>Последний раз онлайн:</Typography.Text>
                         {target.lastonline}
                         <Typography.Text>Ограничение времени:</Typography.Text>
-                        {target.timelimit}
+                        {target.hourlimit}ч {target.minutelimit}мин
                         <Typography.Text>Дни недели:</Typography.Text>
                         {target.daytable}
                         </div>
@@ -95,21 +95,24 @@ const optionsCheckbox = [
 
 export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
   const [form] = Form.useForm();
-  const [isTimeValid, setIsTimeValid] = useState(false);
-  //const [selectedDays, setSelectedDays] = useState<string[]>([]);
+
+  const [hour, setHour] = useState<number>(target?.hourlimit || 0);
+  const [minute, setMinute] = useState<number>(target?.minutelimit || 0);
+  const [isSelectDisabled, setIsSelectDisabled] = useState<boolean>(false);
 
   useEffect(() => {
-    if (target?.timelimit) {
-      const time = dayjs(target.timelimit, 'HH:mm');
-      setIsTimeValid(time && (time.hour() !== 0 || time.minute() !== 0));
-    }
-  }, [target]);
+    setIsSelectDisabled(hour === 0 && minute === 0);
+  }, [hour, minute]);
 
-  const timeChange = (time: Dayjs) => {
-    setIsTimeValid(time && (time.hour() !== 0 || time.minute() !== 0));
+  const hourChange = (value: number | null) => {
+    setHour(value || 0);
   };
 
-  const onFinish = (values: any) => values;
+  const minuteChange = (value: number | null) => {
+    setMinute(value || 0);
+  };
+
+  const onFinish = (values: any) => console.log(values);
 
   return (
  !target ?
@@ -123,6 +126,36 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
         >
             <Input />
         </Form.Item>
+        <Form.Item
+          name="name"
+          label="Имя" // rules how to make rules??
+          rules={[
+            {
+              required: true,
+              message: 'Пожалуйста, введите имя!',
+            },
+          ]
+          }
+        >
+            <Input />
+        </Form.Item>
+        <Form.Item
+          label="Ограничение времени"
+          name="hourlimit">
+            <InputNumber placeholder="Часов" min={0} max={23} maxLength={2} onChange={hourChange} />
+        </Form.Item>
+        <Form.Item
+          name="minutelimit">
+          <InputNumber placeholder="Минут" min={0} max={60} maxLength={2} onChange={minuteChange} />
+        </Form.Item>
+        <Form.Item
+          label="Дни недели"
+          name="daytable">
+            <Select
+              mode="multiple"
+              options={optionsCheckbox}
+              disabled={isSelectDisabled} />
+        </Form.Item>
         <Form.Item>
             <Button type="primary" htmlType="submit">Сохранить</Button>
         </Form.Item>
@@ -133,7 +166,8 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
       initialValues={
         {
           name: target.name,
-          timelimit: dayjs(target.timelimit, 'HH:mm'),
+          hourlimit: target.hourlimit,
+          minutelimit: target.minutelimit,
           daytable: target.daytable,
         }
       }
@@ -153,8 +187,12 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
         </Form.Item>
         <Form.Item
           label="Ограничение времени"
-          name="timelimit">
-            <TimePicker placeholder="Час:Мин" format="HH:mm" showNow={false} needConfirm={false} changeOnScroll onChange={timeChange} />
+          name="hourlimit">
+            <InputNumber placeholder="Часов" min={0} max={23} maxLength={2} onChange={hourChange} />
+        </Form.Item>
+        <Form.Item
+          name="minutelimit">
+          <InputNumber placeholder="Минут" min={0} max={60} maxLength={2} onChange={minuteChange} />
         </Form.Item>
         <Form.Item
           label="Дни недели"
@@ -162,7 +200,7 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
             <Select
               mode="multiple"
               options={optionsCheckbox}
-              disabled={!isTimeValid} />
+              disabled={isSelectDisabled} />
         </Form.Item>
         <Form.Item>
             <Button type="primary" htmlType="submit">Сохранить</Button>
