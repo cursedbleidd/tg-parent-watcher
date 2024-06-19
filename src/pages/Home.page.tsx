@@ -1,6 +1,12 @@
+import { useNavigate } from 'react-router-dom';
+import { useWebApp } from '@vkruglikov/react-telegram-web-app';
+import { Button, Typography } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import styles from './target.module.scss';
 
 export function HomePage() {
+  const navigate = useNavigate();
+  const webApp = useWebApp();
   return (
     <div className={styles.card}>
       <Button onClick={() => navigate('/targets')}>
