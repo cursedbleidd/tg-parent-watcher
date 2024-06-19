@@ -1,6 +1,9 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { HomePage } from './pages/Home.page';
-import { Target } from './pages/Target.page';
+import { Targets } from './pages/Targets.page';
+import { TargetEdit } from './pages/TargetEdit.page';
+import { TargetAdd } from './pages/TargetAdd.page';
+import { SubscriptionPage } from './pages/Subscription.page';
 
 const router = createBrowserRouter([
   {
@@ -8,8 +11,20 @@ const router = createBrowserRouter([
     element: <HomePage />,
   },
   {
-    path: '/target',
-    element: <Target />,
+    path: '/targets',
+    element: <Targets />,
+  },
+  {
+    path: '/edit',
+    element: <TargetEdit />,
+  },
+  {
+    path: '/add',
+    element: <TargetAdd />,
+  },
+  {
+    path: 'subscription',
+    element: <SubscriptionPage />,
   },
 ]);
 
