@@ -136,7 +136,7 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
       name: values.name,
       hourLimit: values.hourLimit,
       minuteLimit: values.minuteLimit,
-      daysOfWeek: values.daysOfWeek.join(' '),
+      daysOfWeek: (values.daysOfWeek) ? values.daysOfWeek.split(' ') : '',
     } as Target;
     console.log(value);
     update(value);
