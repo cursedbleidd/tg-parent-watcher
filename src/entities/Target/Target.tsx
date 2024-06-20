@@ -3,16 +3,10 @@ import { useShowPopup } from '@vkruglikov/react-telegram-web-app';
 import { Card, Skeleton, Space, Typography, Form, Input, Button, Select, InputNumber } from 'antd';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDeleteTarget } from './api/useDeleteTarget';
+import { useUpdateTarget } from './api/useUpdateDevice';
+import { Target } from './ITarget';
 //import styles from './target.module.scss';
-
-export interface Target {
-  name: string;
-  lastonline: string;
-  daytable: string[];
-  hourlimit: number;
-  minutelimit: number;
-  id: string;
-}
 
 const { Meta } = Card;
 
@@ -22,6 +16,7 @@ const popupParams = {
         {
             id: '1',
             type: 'ok',
+            onclick: () => undefined,
         },
         {
             id: '2',
@@ -30,9 +25,24 @@ const popupParams = {
     ],
 };
 
+const popupParamsDel = {
+  message: 'Вы уверены?',
+  buttons: [
+      {
+          id: '1',
+          type: 'ok',
+      },
+      {
+          id: '2',
+          type: 'cancel',
+      },
+  ],
+};
+
 export const TargetCard: React.FC<{ target: Target }> = ({ target }) => {
     const showPopup = useShowPopup();
     const navigate = useNavigate();
+    const deleteTarget = useDeleteTarget();
     return (
         <>
             <Card
@@ -40,7 +50,13 @@ export const TargetCard: React.FC<{ target: Target }> = ({ target }) => {
               actions={[
                   <DeleteOutlined
                     key="delete"
-                    onClick={() => showPopup(popupParams)}
+                    onClick={async () => {
+                      const answer = await showPopup(popupParamsDel);
+                      if (answer === '1') {
+                      await deleteTarget(target.id);
+                      }
+                    }
+                    }
                     />,
                   <EditOutlined
                     key="edit"
@@ -59,11 +75,11 @@ export const TargetCard: React.FC<{ target: Target }> = ({ target }) => {
                     description={
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <Typography.Text>Последний раз онлайн:</Typography.Text>
-                        {target.lastonline}
+                        {target.lastOnline}
                         <Typography.Text>Ограничение времени:</Typography.Text>
-                        {target.hourlimit}ч {target.minutelimit}мин
+                        {target.hourLimit}ч {target.minuteLimit}мин
                         <Typography.Text>Дни недели:</Typography.Text>
-                        {target.daytable}
+                        {target.daysOfWeek}
                         </div>
                     }
                   />
@@ -96,8 +112,9 @@ const optionsCheckbox = [
 export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
   const [form] = Form.useForm();
 
-  const [hour, setHour] = useState<number>(target?.hourlimit || 0);
-  const [minute, setMinute] = useState<number>(target?.minutelimit || 0);
+  const update = useUpdateTarget();
+  const [hour, setHour] = useState<number>(target?.hourLimit || 0);
+  const [minute, setMinute] = useState<number>(target?.minuteLimit || 0);
   const [isSelectDisabled, setIsSelectDisabled] = useState<boolean>(false);
 
   useEffect(() => {
@@ -112,7 +129,18 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
     setMinute(value || 0);
   };
 
-  const onFinish = (values: any) => console.log(values);
+  const onFinish = (values: any) => {
+    const value = {
+      id: values.id,
+      lastOnline: values.lastOnline,
+      name: values.name,
+      hourLimit: values.hourLimit,
+      minuteLimit: values.minuteLimit,
+      daysOfWeek: values.daysOfWeek.join(' '),
+    } as Target;
+    console.log(value);
+    update(value);
+  };
 
   return (
  !target ?
@@ -140,17 +168,24 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
             <Input />
         </Form.Item>
         <Form.Item
+          name="lastOnline"
+          label="lastonline"
+          style={{ display: 'none' }}
+        >
+            <Input />
+        </Form.Item>
+        <Form.Item
           label="Ограничение времени"
-          name="hourlimit">
+          name="hourLimit">
             <InputNumber placeholder="Часов" min={0} max={23} maxLength={2} onChange={hourChange} />
         </Form.Item>
         <Form.Item
-          name="minutelimit">
+          name="minuteLimit">
           <InputNumber placeholder="Минут" min={0} max={60} maxLength={2} onChange={minuteChange} />
         </Form.Item>
         <Form.Item
           label="Дни недели"
-          name="daytable">
+          name="daysOfWeek">
             <Select
               mode="multiple"
               options={optionsCheckbox}
@@ -165,13 +200,23 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
       form={form}
       initialValues={
         {
+          id: target.id,
           name: target.name,
-          hourlimit: target.hourlimit,
-          minutelimit: target.minutelimit,
-          daytable: target.daytable,
+          lastOnline: target.lastOnline,
+          hourLimit: target.hourLimit,
+          minuteLimit: target.minuteLimit,
+          daysOfWeek: target.daysOfWeek.split(' '),
         }
       }
       onFinish={onFinish}>
+        <Form.Item
+          name="id"
+          label="Идентификатор"
+          style={{ display: 'none' }}
+          rules={[{ required: true, message: 'Пожалуйста, введите идентификатор!' }]}
+        >
+            <Input />
+        </Form.Item>
         <Form.Item
           name="name"
           label="Имя" // rules how to make rules??
@@ -186,17 +231,24 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
             <Input />
         </Form.Item>
         <Form.Item
+          name="lastOnline"
+          label="lastonline"
+          style={{ display: 'none' }}
+        >
+            <Input />
+        </Form.Item>
+        <Form.Item
           label="Ограничение времени"
-          name="hourlimit">
+          name="hourLimit">
             <InputNumber placeholder="Часов" min={0} max={23} maxLength={2} onChange={hourChange} />
         </Form.Item>
         <Form.Item
-          name="minutelimit">
-          <InputNumber placeholder="Минут" min={0} max={60} maxLength={2} onChange={minuteChange} />
+          name="minuteLimit">
+          <InputNumber placeholder="Минут" min={0} max={59} maxLength={2} onChange={minuteChange} />
         </Form.Item>
         <Form.Item
           label="Дни недели"
-          name="daytable">
+          name="daysOfWeek">
             <Select
               mode="multiple"
               options={optionsCheckbox}
