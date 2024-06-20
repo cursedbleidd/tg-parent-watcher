@@ -12,11 +12,11 @@ export const updateTarget = async (target: Target) => {
         }
         );
 
-        return response.data;
+        return response.status;
     } catch (error) {
         console.error('Ошибка при выполнении запроса', error);
     }
-    return [];
+    return undefined;
 }; // API request
 
 export const useUpdateTarget = () => updateTarget;

@@ -7,11 +7,11 @@ export const deleteTarget = async (targetId: string) => {
             params: { token },
         });
 
-        return response.data;
+        return response.status;
     } catch (error) {
         console.error('Ошибка при выполнении запроса', error);
     }
-    return [];
+    return undefined;
 }; // API request
 
 export const useDeleteTarget = () => deleteTarget;

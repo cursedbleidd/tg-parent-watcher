@@ -41,19 +41,22 @@ const popupParamsDel = {
 
 export const TargetCard: React.FC<{ target: Target }> = ({ target }) => {
     const showPopup = useShowPopup();
+    const [displaySet, setDisplay] = useState<string>('');
     const navigate = useNavigate();
     const deleteTarget = useDeleteTarget();
     return (
         <>
             <Card
-              style={{ width: '100%' }}
+              style={{ width: '100%', display: displaySet }}
               actions={[
                   <DeleteOutlined
                     key="delete"
                     onClick={async () => {
                       const answer = await showPopup(popupParamsDel);
                       if (answer === '1') {
-                      await deleteTarget(target.id);
+                        if (await deleteTarget(target.id) === 200) {
+                          setDisplay('none');
+                        }
                       }
                     }
                     }
@@ -111,7 +114,7 @@ const optionsCheckbox = [
 
 export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
   const [form] = Form.useForm();
-
+  const navigate = useNavigate();
   const update = useUpdateTarget();
   const [hour, setHour] = useState<number>(target?.hourLimit || 0);
   const [minute, setMinute] = useState<number>(target?.minuteLimit || 0);
@@ -134,12 +137,12 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
       id: values.id,
       lastOnline: values.lastOnline,
       name: values.name,
-      hourLimit: values.hourLimit,
-      minuteLimit: values.minuteLimit,
-      daysOfWeek: (values.daysOfWeek) ? values.daysOfWeek.split(' ') : '',
+      hourLimit: (values.hourLimit) ? values.hourLimit : undefined,
+      minuteLimit: (values.minuteLimit) ? values.minuteLimit : undefined,
+      daysOfWeek: (values.daysOfWeek) ? values.daysOfWeek.join(' ') : undefined,
     } as Target;
-    console.log(value);
     update(value);
+    navigate('/targets', { replace: true });
   };
 
   return (
@@ -205,7 +208,7 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
           lastOnline: target.lastOnline,
           hourLimit: target.hourLimit,
           minuteLimit: target.minuteLimit,
-          daysOfWeek: target.daysOfWeek.split(' '),
+          daysOfWeek: (target.daysOfWeek) ? target.daysOfWeek.split(' ') : [],
         }
       }
       onFinish={onFinish}>
