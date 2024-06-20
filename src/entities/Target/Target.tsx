@@ -132,7 +132,7 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
     setMinute(value || 0);
   };
 
-  const onFinish = (values: any) => {
+  const onFinish = async (values: any) => {
     const value = {
       id: values.id,
       lastOnline: values.lastOnline,
@@ -141,8 +141,9 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
       minuteLimit: (values.minuteLimit) ? values.minuteLimit : undefined,
       daysOfWeek: (values.daysOfWeek) ? values.daysOfWeek.join(' ') : undefined,
     } as Target;
-    update(value);
+    if (await update(value) === 200) {
     navigate('/targets', { replace: true });
+    }
   };
 
   return (
