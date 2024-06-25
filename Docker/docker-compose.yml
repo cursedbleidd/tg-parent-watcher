@@ -1,6 +1,6 @@
 services:
-  webapp:
-    image: registry.qpilipp.ru/psu-mkr-2024/6-tg-watcher/tg-parent-front:${IMAGE_VERSION:?error}  #    ASP.NET
+  tg-parent-front:
+    image: registry.qpilipp.ru/psu-mkr-2024/6-tg-watcher/tg-parent-front:${IMAGE_VERSION:?error}
     build:
       context: .  #   Dockerfile
       dockerfile: Dockerfile
