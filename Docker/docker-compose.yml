@@ -1,0 +1,8 @@
+services:
+  webapp:
+    image: registry.qpilipp.ru/psu-mkr-2024/6-tg-watcher/tg-parent-front:${IMAGE_VERSION:?error}  #    ASP.NET
+    build:
+      context: .  #   Dockerfile
+      dockerfile: Dockerfile
+    ports:
+      - "8522:3000"

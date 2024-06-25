@@ -1,15 +1,52 @@
 stages:
   - lint
+  - build-push
+  - deploy
 
 .deps:
   image: node:20-alpine
   before_script: &npm_install
     - yarn
 
-job_lint:
+lint_job:
   stage: lint
   extends:
     - .deps
   script:
     - yarn lint
 
+build-push:
+  stage: build-push
+  needs: [lint_job]
+  rules:
+    - if: '$CI_COMMIT_TAG != null'
+      when: manual
+  image: docker:20.10
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ''
+  services:
+    - docker:20.10.16-dind
+  before_script:
+    - export IMAGE=$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+  script:
+    - time docker build -t $IMAGE -f Docker/Dockerfile .
+    - docker push $IMAGE
+
+deploy:
+  stage: deploy
+  needs: [build-push]    
+  rules:
+    - if: '$CI_COMMIT_TAG != null'
+      when: manual
+  extends: .ssh_defaults
+  before_script:
+    - echo "IMAGE_VERSION=$CI_COMMIT_TAG" > .env
+  script:
+    - ssh $REMOTE_USER@$REMOTE_HOST rm -fr $REMOTE_FOLDER
+    - ssh $REMOTE_USER@$REMOTE_HOST mkdir -p $REMOTE_FOLDER
+    - scp "Docker/docker-compose.yml" $REMOTE_USER@$REMOTE_HOST:$REMOTE_FOLDER/Docker/docker-compose.yml
+    - scp ".env" $REMOTE_USER@$REMOTE_HOST:$REMOTE_FOLDER/.env
+    - ssh $REMOTE_USER@$REMOTE_HOST docker-compose --env-file .env -f $REMOTE_FOLDER/Docker/docker-compose.yml up -d
+    - ssh $REMOTE_USER@$REMOTE_HOST rm $REMOTE_FOLDER/.env
