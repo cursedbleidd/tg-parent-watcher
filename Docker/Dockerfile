@@ -2,14 +2,11 @@ FROM node:20-alpine3.20 AS build
 
 WORKDIR /app
 
-RUN apk add --no-cache tree
-
 RUN corepack enable
 COPY package.json ./
 COPY yarn.lock ./
 COPY .yarnrc.yml ./
 COPY .yarn ./.yarn
-RUN tree -a /app
 RUN yarn install
 
 ENV PATH /app/node_modules/.bin:$PATH
