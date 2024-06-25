@@ -8,6 +8,16 @@ stages:
   before_script: &npm_install
     - yarn
 
+.ssh_defaults:
+  image: kroniak/ssh-client
+  before_script:
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -p $REMOTE_PORT $REMOTE_HOST >> ~/.ssh/known_hosts
+    - chmod 664 ~/.ssh/known_hosts  
+
 lint_job:
   stage: lint
   extends:
