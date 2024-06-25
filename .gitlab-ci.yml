@@ -58,5 +58,5 @@ deploy:
     - ssh $REMOTE_USER@$REMOTE_HOST -p $REMOTE_PORT mkdir -p $REMOTE_FOLDER/Docker
     - scp -P $REMOTE_PORT "Docker/docker-compose.yml" $REMOTE_USER@$REMOTE_HOST:$REMOTE_FOLDER/Docker/docker-compose.yml
     - scp -P $REMOTE_PORT ".env" $REMOTE_USER@$REMOTE_HOST:$REMOTE_FOLDER/.env
-    - ssh $REMOTE_USER@$REMOTE_HOST -p $REMOTE_PORT docker-compose --env-file .env -f $REMOTE_FOLDER/Docker/docker-compose.yml up -d
+    - ssh $REMOTE_USER@$REMOTE_HOST -p $REMOTE_PORT docker compose --env-file .env -f $REMOTE_FOLDER/Docker/docker-compose.yml up -d
     - ssh $REMOTE_USER@$REMOTE_HOST -p $REMOTE_PORT rm $REMOTE_FOLDER/.env
