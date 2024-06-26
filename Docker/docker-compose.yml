@@ -1,6 +1,7 @@
 services:
   tg-parent-front:
     image: registry.qpilipp.ru/psu-mkr-2024/6-tg-watcher/tg-parent-front:${IMAGE_VERSION:?error}
+    container_name: tg-watcher-front
     build:
       context: .  #   Dockerfile
       dockerfile: Dockerfile
