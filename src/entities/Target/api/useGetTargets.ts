@@ -33,7 +33,7 @@ import { Target } from '../ITarget';
 const getTargets = async () => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.get<Target[]>('https://tgwatcher-fe.qpilipp.ru/Devices/', {
+        const response = await axios.get<Target[]>('https://tgwatcher-be.qpilipp.ru/Devices/', {
             params: { token },
         });
 
