@@ -26,6 +26,10 @@ const router = createBrowserRouter([
     path: '/subscription',
     element: <SubscriptionPage />,
   },
+  {
+    path: '*',
+    element: <HomePage />,
+  },
 ]);
 
 export function Router() {
