@@ -10,8 +10,16 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './vitest.setup.mjs',
   },
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+      },
+    },
+  },
   server: {
     host: true,
     port: 3000,
+    historyApiFallback: true,
   }
 });

@@ -7,7 +7,7 @@ import { SubscriptionPage } from './pages/Subscription.page';
 
 const router = createBrowserRouter([
   {
-    path: '/*',
+    path: '/',
     element: <HomePage />,
   },
   {
