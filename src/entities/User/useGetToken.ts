@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useWebApp } from '@vkruglikov/react-telegram-web-app';
 import { useEffect } from 'react';
 
-export const useGetToken = () => {
+export const useGetToken = () => { //return response.status
     const webApp = useWebApp();
 
     useEffect(() => {
@@ -14,7 +14,7 @@ export const useGetToken = () => {
                     },
                 });
 
-                if (response.data !== '-1' && response.data !== '404') {
+                if (response.data !== '-1' && response.data !== '404') { //refactor
                     localStorage.setItem('token', response.data); // Сохранение токена в localStorage
                 } else {
                     console.error('Ошибка при получении токена');

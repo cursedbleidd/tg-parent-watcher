@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Target } from '../ITarget';
 
-export const updateTarget = async (target: Target) => {
+export const updateTarget = async (target: Target) => { //return response.status
     try {
         const token = localStorage.getItem('token');
         const response = await axios.put('https://tgwatcher-be.qpilipp.ru/Devices/', await JSON.stringify(target), {
