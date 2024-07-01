@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDeleteTarget } from './api/useDeleteTarget';
 import { useUpdateTarget } from './api/useUpdateDevice';
 import { Target } from './ITarget';
+import { useShutdownTargets } from './api/useShutdownTarget';
 //import styles from './target.module.scss';
 
 const { Meta } = Card;
@@ -44,6 +45,7 @@ export const TargetCard: React.FC<{ target: Target }> = ({ target }) => {
     const [displaySet, setDisplay] = useState<string>('');
     const navigate = useNavigate();
     const deleteTarget = useDeleteTarget();
+    const shutdownTarget = useShutdownTargets();
     return (
         <>
             <Card
@@ -68,7 +70,12 @@ export const TargetCard: React.FC<{ target: Target }> = ({ target }) => {
                   <PoweroffOutlined
                     key="poweroff"
                     style={{ color: 'red' }}
-                    onClick={() => showPopup(popupParams)}
+                    onClick={async () => {
+                      const answer = await showPopup(popupParams);
+                      if (answer === '1') {
+                        await shutdownTarget(target.id);
+                      }
+                    }}
                     />, //remake
                 ]}
                 >

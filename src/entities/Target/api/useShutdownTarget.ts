@@ -1,11 +1,10 @@
 import axios from 'axios';
-import { Target } from '../ITarget';
 
-const targetShutdown = async (target: Target) => { //return response.status
+const targetShutdown = async (targetId: string) => { //return response.status
     try {
         const token = localStorage.getItem('token');
         const response = await axios.get('https://tgwatcher-be.qpilipp.ru/Devices/shutdown/', {
-            params: { Token: token, Id: target.id },
+            params: { Token: token, Id: targetId },
         });
         return response.status;
     } catch (error) {
@@ -14,4 +13,4 @@ const targetShutdown = async (target: Target) => { //return response.status
     return undefined;
 }; // API request
 
-export const useGetTargets = () => targetShutdown;
+export const useShutdownTargets = () => targetShutdown;
