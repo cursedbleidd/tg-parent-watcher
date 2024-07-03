@@ -8,9 +8,8 @@ const targetShutdown = async (targetId: string) => { //return response.status
         });
         return response.status;
     } catch (error) {
-        console.error('Ошибка при выполнении запроса', error);
+        return undefined;
     }
-    return undefined;
-}; // API request
+};
 
 export const useShutdownTargets = () => targetShutdown;

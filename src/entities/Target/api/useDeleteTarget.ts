@@ -9,9 +9,8 @@ export const deleteTarget = async (targetId: string) => { //return response.stat
 
         return response.status;
     } catch (error) {
-        console.error('Ошибка при выполнении запроса', error);
+        return undefined;
     }
-    return undefined;
-}; // API request
+};
 
 export const useDeleteTarget = () => deleteTarget;

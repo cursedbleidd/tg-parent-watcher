@@ -14,9 +14,8 @@ export const updateTarget = async (target: Target) => { //return response.status
 
         return response.status;
     } catch (error) {
-        console.error('Ошибка при выполнении запроса', error);
+        return undefined;
     }
-    return undefined;
-}; // API request
+};
 
 export const useUpdateTarget = () => updateTarget;

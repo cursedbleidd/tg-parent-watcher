@@ -17,27 +17,12 @@ const popupParams = {
         {
             id: '1',
             type: 'ok',
-            onclick: () => undefined,
         },
         {
             id: '2',
             type: 'cancel',
         },
     ],
-};
-
-const popupParamsDel = {
-  message: 'Вы уверены?',
-  buttons: [
-      {
-          id: '1',
-          type: 'ok',
-      },
-      {
-          id: '2',
-          type: 'cancel',
-      },
-  ],
 };
 
 export const TargetCard: React.FC<{ target: Target }> = ({ target }) => {
@@ -54,10 +39,12 @@ export const TargetCard: React.FC<{ target: Target }> = ({ target }) => {
                   <DeleteOutlined
                     key="delete"
                     onClick={async () => {
-                      const answer = await showPopup(popupParamsDel);
+                      const answer = await showPopup(popupParams);
                       if (answer === '1') {
                         if (await deleteTarget(target.id) === 200) {
                           setDisplay('none');
+                        } else {
+                          await showPopup({ message: 'Произошла ошибка' });
                         }
                       }
                     }
@@ -73,10 +60,14 @@ export const TargetCard: React.FC<{ target: Target }> = ({ target }) => {
                     onClick={async () => {
                       const answer = await showPopup(popupParams);
                       if (answer === '1') {
-                        await shutdownTarget(target.id);
+                        if (await shutdownTarget(target.id) === 200) {
+                          await showPopup({ message: 'Устройство отключено' }); //add other responses
+                        } else {
+                          await showPopup({ message: 'Произошла ошибка' });
+                        }
                       }
                     }}
-                    />, //remake
+                    />,
                 ]}
                 >
                 <Skeleton loading={false} avatar active>
@@ -121,6 +112,7 @@ const optionsCheckbox = [
 
 export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
   const [form] = Form.useForm();
+  const showPopup = useShowPopup();
   const navigate = useNavigate();
   const update = useUpdateTarget();
   const [hour, setHour] = useState<number>(target?.hourLimit || 0);
@@ -149,7 +141,9 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
       daysOfWeek: (values.daysOfWeek) ? values.daysOfWeek.join(' ') : undefined,
     } as Target;
     if (await update(value) === 200) {
-    navigate('/targets', { replace: true });
+      navigate('/targets', { replace: true });
+    } else {
+      showPopup({ message: 'Произошла ошибка' });
     }
   };
 
@@ -167,7 +161,7 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
         </Form.Item>
         <Form.Item
           name="name"
-          label="Имя" // rules how to make rules??
+          label="Имя"
           rules={[
             {
               required: true,
@@ -230,7 +224,7 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
         </Form.Item>
         <Form.Item
           name="name"
-          label="Имя" // rules how to make rules??
+          label="Имя"
           rules={[
             {
               required: true,

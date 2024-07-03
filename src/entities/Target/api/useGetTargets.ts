@@ -42,10 +42,9 @@ const getTargets = async () => { //return response.status
         }
         return response.data;
     } catch (error) {
-        console.error('Ошибка при выполнении запроса', error);
+        return undefined;
     }
-    return [];
-}; // API request
+};
 
 export const useGetTargets = () => {
     const [targets, setTargets] = useState<Target[] | undefined>(undefined);

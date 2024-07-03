@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useWebApp } from '@vkruglikov/react-telegram-web-app';
 import { useEffect } from 'react';
 
-export const useGetToken = () => { //return response.status
+export const useGetToken = (onError: (err: string) => void) => { //return response.status
     const webApp = useWebApp();
 
     useEffect(() => {
@@ -14,13 +14,13 @@ export const useGetToken = () => { //return response.status
                     },
                 });
 
-                if (response.data !== '-1' && response.data !== '404') { //refactor
+                if (response.status === 200) { //refactor
                     localStorage.setItem('token', response.data); // Сохранение токена в localStorage
                 } else {
-                    console.error('Ошибка при получении токена');
+                    onError('Ошибка при получении токена');
                 }
-            } catch (error) {
-                console.error('Ошибка при выполнении запроса', error);
+            } catch (error: any) {
+                onError(error.message);
             }
         };
 
