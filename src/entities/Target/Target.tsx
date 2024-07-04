@@ -61,7 +61,7 @@ export const TargetCard: React.FC<{ target: Target }> = ({ target }) => {
                       const answer = await showPopup(popupParams);
                       if (answer === '1') {
                         if (await shutdownTarget(target.id) === 200) {
-                          await showPopup({ message: 'Устройство будет отключено через 15 сек' }); //add other responses
+                          await showPopup({ message: 'Устройство будет отключено' }); //add other responses
                         } else {
                           await showPopup({ message: 'Произошла ошибка' });
                         }
@@ -77,10 +77,20 @@ export const TargetCard: React.FC<{ target: Target }> = ({ target }) => {
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <Typography.Text>Последний раз онлайн:</Typography.Text>
                         {dayjs(target.lastOnline).format('DD.MM.YYYY HH:mm:ss')}
+                        {
+                        (target.hourLimit === 0 && target.minuteLimit === 0) ? <></> :
+                        <>
                         <Typography.Text>Ограничение времени:</Typography.Text>
                         {target.hourLimit}ч {target.minuteLimit}мин
+                        </>
+                        }
+                        {
+                        (target.daysOfWeek.length <= 1) ? <></> :
+                        <>
                         <Typography.Text>Дни недели:</Typography.Text>
                         {target.daysOfWeek}
+                        </>
+                        }
                         </div>
                     }
                   />
