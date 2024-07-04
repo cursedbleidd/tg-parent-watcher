@@ -3,11 +3,11 @@ import { useShowPopup } from '@vkruglikov/react-telegram-web-app';
 import { Card, Skeleton, Space, Typography, Form, Input, Button, Select, InputNumber } from 'antd';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 import { useDeleteTarget } from './api/useDeleteTarget';
 import { useUpdateTarget } from './api/useUpdateDevice';
 import { Target } from './ITarget';
 import { useShutdownTargets } from './api/useShutdownTarget';
-//import styles from './target.module.scss';
 
 const { Meta } = Card;
 
@@ -76,7 +76,7 @@ export const TargetCard: React.FC<{ target: Target }> = ({ target }) => {
                     description={
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <Typography.Text>Последний раз онлайн:</Typography.Text>
-                        {target.lastOnline}
+                        {dayjs(target.lastOnline).format('DD.MM.YYYY HH:mm:ss')}
                         <Typography.Text>Ограничение времени:</Typography.Text>
                         {target.hourLimit}ч {target.minuteLimit}мин
                         <Typography.Text>Дни недели:</Typography.Text>
