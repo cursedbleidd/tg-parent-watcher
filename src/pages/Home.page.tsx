@@ -3,7 +3,6 @@ import { useWebApp } from '@vkruglikov/react-telegram-web-app';
 import { Button, Typography } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
-import styles from './target.module.scss';
 
 export function HomePage() {
   const [sdata, setInitData] = useState<string>('');
@@ -16,7 +15,12 @@ export function HomePage() {
   const navigate = useNavigate();
   const webApp = useWebApp();
   return (
-    <div className={styles.card}>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      }}>
       <Button onClick={() => navigate('/targets')}>
         targets
       </Button>
