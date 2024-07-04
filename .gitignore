@@ -133,3 +133,6 @@ dist
 *.pem
 *.p12
 *.crt
+
+
+src/entities/Person/
