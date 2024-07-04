@@ -17,7 +17,7 @@ export const Targets: React.FC = () => {
   };
   return (
     <>
-       {(!targets || targets.length === 0) ?
+       {(targets.length === 0) ?
        <>
        <Typography.Title level={2} style={{ textAlign: 'center' }}>Список устройств пуст</Typography.Title>
        <Typography.Title level={4} style={{ textAlign: 'center' }}>Добавьте новое устройство</Typography.Title>
