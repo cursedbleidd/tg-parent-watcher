@@ -61,7 +61,7 @@ export const TargetCard: React.FC<{ target: Target }> = ({ target }) => {
                       const answer = await showPopup(popupParams);
                       if (answer === '1') {
                         if (await shutdownTarget(target.id) === 200) {
-                          await showPopup({ message: 'Устройство отключено' }); //add other responses
+                          await showPopup({ message: 'Устройство будет отключено через 15 сек' }); //add other responses
                         } else {
                           await showPopup({ message: 'Произошла ошибка' });
                         }
@@ -143,7 +143,7 @@ export const TargetForm: React.FC<{ target?: Target } > = ({ target }) => {
     if (await update(value) === 200) {
       navigate('/targets', { replace: true });
     } else {
-      showPopup({ message: 'Произошла ошибка' });
+      showPopup({ message: 'Устройство не найдено' });
     }
   };
 
