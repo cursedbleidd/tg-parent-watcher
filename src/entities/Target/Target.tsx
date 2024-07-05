@@ -82,13 +82,13 @@ export const TargetCard: React.FC<{ target: Target }> = ({ target }) => {
                         <>
                         <Typography.Text>Ограничение времени:</Typography.Text>
                         {target.hourLimit}ч {target.minuteLimit}мин
-                        </>
-                        }
                         {
-                        (target.daysOfWeek.length <= 1) ? <></> :
+                        (target.daysOfWeek && target.daysOfWeek.length <= 1) ? <></> :
                         <>
                         <Typography.Text>Дни недели:</Typography.Text>
                         {target.daysOfWeek}
+                        </>
+                        }
                         </>
                         }
                         </div>
