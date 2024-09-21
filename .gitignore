@@ -135,3 +135,4 @@ dist
 *.crt
 
 /src/entities/Person
+desktop.ini
